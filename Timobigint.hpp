@@ -6,8 +6,18 @@
 #include <string>
 
 struct bigint {
+	// actual container with values stored in form of indiviual digits
 	std::deque<int> digits; // each digit is a int, so substraction carry logic is easier. public because it's useful
+
+	// default constructor, initialized the container with 1 element, but leaved it uninitialized
 	bigint() : digits(1) {} // default ctor: only one digit (namely 0)
+	// does the same, but initializes the value to zero
+	bigint() : digits(1, 0) {} // Initialize with one digit containing value 0
+
+	// constructor with argument, takes size_t, and does push_front with the last digit(remainder of division by zero)
+	// then divides the size_t by 10
+	// if no values were passed as argument (init == 0), just push_front a zero
+	// takes size_t because it is ht biggest of all possible number 
 	bigint(size_t init) {
 		while (init) {
 			digits.push_front(static_cast<int>(init % 10));
@@ -16,26 +26,38 @@ struct bigint {
 		if (digits.empty()) // when passing 0 explicitly, no digits will have been pushed, hence this
 			digits.push_front(0);
 	}
+	// copy constructor
 	bigint(const bigint& other) : digits(other.digits) {} // trivial
+
+	// assignment operator overload
 	bigint &operator=(const bigint& other) {
 		digits = other.digits;
 		return *this;
 	}
-
+	// addition operator overload
 	bigint operator+(const bigint& other) const {
 		return add_or_substract(other, true);
 	}
-
+	// substraction operator dummy overload, doesnt do anything, returns the a zero
+	
 	bigint operator-(const bigint& other) const {
 		(void)other;
 		return bigint(0);
 	}
+	// addition assignemnt operator dummy overload, doesnt do anything, returns the a zero
 
 	bigint operator+=(const bigint& other) {
 		*this = add_or_substract(other, true);
 		return *this;
 	}
+	//shouldnt it be this one? to return the reference instead of copy
 
+
+	bigint& operator+=(const bigint& other) {
+		*this = add_or_substract(other, true);
+		return *this;
+	}
+	// incremenet operator overload
 	bigint operator++() {
 		*this = add_or_substract(bigint(1), true);
 		return *this;
