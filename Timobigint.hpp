@@ -46,10 +46,10 @@ struct bigint {
 	}
 	// addition assignemnt operator dummy overload, doesnt do anything, returns the a zero
 
-	bigint operator+=(const bigint& other) {
-		*this = add_or_substract(other, true);
-		return *this;
-	}
+	// bigint operator+=(const bigint& other) {
+	// 	*this = add_or_substract(other, true);
+	// 	return *this;
+	// }
 	//shouldnt it be this one? to return the reference instead of copy
 
 
@@ -68,7 +68,10 @@ struct bigint {
 		*this = add_or_substract(bigint(1), true);
 		return old_val;
 	}
-
+	// bitshift left operator overload
+	// 1. use a copy of the pointer instead of orignal value
+	// 2. in case original value is 0, just return 0, dont change the value
+	// 3. in other cases - push_back 0 the number of times you bitshift
 	bigint operator<<(int lshift) const {
 		bigint copy(*this);
 		if (digits.size() == 1 && digits[0] == 0)
@@ -77,7 +80,10 @@ struct bigint {
 			copy.digits.push_back(0);
 		return copy;
 	}
-
+	
+	//bitshift right decimal operator (actually just divide by 10 n times(without remainder))
+	// 1.while n and the container is not empty - do pop_back
+	// 2. if while doing pop_back copy.digits.empty (empty container) - push_front 0 so that there is one zero
 	bigint operator>>(int rshift) const {
 		bigint copy(*this);
 		for (int i = 0; i < rshift; ++i) {
