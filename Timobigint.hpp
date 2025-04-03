@@ -212,11 +212,12 @@ struct bigint {
 	}
 private:
 	bigint add_or_substract(const bigint& other, bool do_add) const {
+		// figure out which number has more digits with a bool flag
 		bool other_has_more_digits = digits.size() < other.digits.size();
-
+		// depending on the bool flag assign *this to a bigint more_digits and other to less_digits
 		const bigint& bigint_with_less_digits(other_has_more_digits ? *this : other);
 		bigint        bigint_with_more_digits(other_has_more_digits ? other : *this); // returning this
-
+		// determine offset by subtracting more_digits.size() -
 		size_t offset = bigint_with_more_digits.digits.size() - bigint_with_less_digits.digits.size();
 
 		for (int idx = static_cast<int>(bigint_with_less_digits.digits.size()) - 1; idx >= 0; --idx) { // start from least significant digit on smaller number
