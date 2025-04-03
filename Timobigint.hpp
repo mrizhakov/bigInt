@@ -84,6 +84,8 @@ struct bigint {
 	//bitshift right decimal operator (actually just divide by 10 n times(without remainder))
 	// 1.while n and the container is not empty - do pop_back
 	// 2. if while doing pop_back copy.digits.empty (empty container) - push_front 0 so that there is one zero
+	// 3. Do all operations on a bigint copy(*this)
+	// 4. is const
 	bigint operator>>(int rshift) const {
 		bigint copy(*this);
 		for (int i = 0; i < rshift; ++i) {
@@ -96,7 +98,7 @@ struct bigint {
 		}
 		return copy;
 	}
-
+	// bitshifting to the left using a bigint as an argument. No difference, just change the types of input and iterator to bigint&
 	bigint operator<<(const bigint& lshift) const {
 		bigint copy(*this);
 		if (digits.size() == 1 && digits[0] == 0)
@@ -106,6 +108,7 @@ struct bigint {
 		}
 		return copy;
 	}
+
 
 	bigint operator>>(const bigint& rshift) const {
 		bigint copy(*this);
@@ -119,7 +122,10 @@ struct bigint {
 		}
 		return copy;
 	}
-
+	// left shift assignment operator
+	// Difference between it and << is that <<= returns the modified object, while << leaves the original object unchanged and returns a copy
+	// Instead of returning a copy, modify digits and return *this
+	// >>= is not const
 	bigint operator<<=(int lshift) {
 		if (digits.size() == 1 && digits[0] == 0)
 			return *this;
